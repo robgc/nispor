@@ -1,4 +1,5 @@
-use clap::{clap_app, crate_authors, crate_version};
+mod cli;
+
 use nispor::{Iface, NetState, NisporError, Route, RouteRule};
 use serde_derive::Serialize;
 use serde_json;
@@ -109,23 +110,7 @@ fn get_routes(state: &NetState, matches: &clap::ArgMatches) -> CliResult {
 }
 
 fn main() {
-    let matches = clap_app!(npc =>
-        (version: crate_version!())
-        (author: crate_authors!())
-        (about: "Nispor CLI")
-        (@arg ifname: [INTERFACE_NAME] "interface name")
-        (@arg json: -j --json "Show in json format")
-        (@subcommand route =>
-            (@arg json: -j --json "Show in json format")
-            (@arg dev: -d --dev [OIF] "Show only route entries with output to the specified interface")
-            (about: "Show routes")
-        )
-        (@subcommand rule =>
-            (@arg json: -j --json "Show in json format")
-            (about: "Show routes rules")
-        )
-    )
-    .get_matches();
+    let matches = cli::build_cli().get_matches();
 
     let mut output_format = parse_arg_output_format(&matches);
 
